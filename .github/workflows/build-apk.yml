@@ -1,7 +1,7 @@
 name: Build Android APK
 
 on:
-  workflow_dispatch: # यह हमें बटन दबाकर बिल्ड शुरू करने की सुविधा देगा
+  workflow_dispatch:
 
 jobs:
   build:
@@ -15,7 +15,7 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Setup Java (Android needs Java 17)
+      - name: Setup Java
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
@@ -24,16 +24,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Expo Prebuild (Bypass EAS Queue)
+      - name: Expo Prebuild
         run: npx expo prebuild --platform android
 
-      - name: Build APK
+      - name: Generate Keystore
         working-directory: android
-        run: ./gradlew assembleDebug
+        run: keytool -genkey -v -keystore release.keystore -alias my-alias -keypass password -storepass password -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=StudyTracker, O=StudyTracker, C=IN"
+
+      - name: Build Release APK
+        working-directory: android
+        run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=release.keystore -Pandroid.injected.signing.store.password=password -Pandroid.injected.signing.key.alias=my-alias -Pandroid.injected.signing.key.password=password
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: StudyTracker-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          name: StudyTracker-Release-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
           
