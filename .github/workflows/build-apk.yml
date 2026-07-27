@@ -27,20 +27,16 @@ jobs:
       - name: Expo Prebuild
         run: npx expo prebuild --platform android
 
-      - name: Generate Keystore
-        working-directory: android/app
-        run: keytool -genkey -v -keystore release.keystore -alias my-alias -keypass password -storepass password -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=StudyTracker, O=StudyTracker, C=IN"
-
       - name: Make gradlew executable
         working-directory: android
         run: chmod +x gradlew
 
-      - name: Build Release APK
+      - name: Build Debug APK
         working-directory: android
-        run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=$(pwd)/app/release.keystore -Pandroid.injected.signing.store.password=password -Pandroid.injected.signing.key.alias=my-alias -Pandroid.injected.signing.key.password=password
+        run: ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: StudyTracker-Release-APK
-          path: android/app/build/outputs/apk/release/app-release.apk
+          name: StudyTracker-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
