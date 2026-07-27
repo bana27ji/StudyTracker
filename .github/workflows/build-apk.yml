@@ -31,9 +31,13 @@ jobs:
         working-directory: android/app
         run: keytool -genkey -v -keystore release.keystore -alias my-alias -keypass password -storepass password -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=StudyTracker, O=StudyTracker, C=IN"
 
+      - name: Make gradlew executable
+        working-directory: android
+        run: chmod +x gradlew
+
       - name: Build Release APK
         working-directory: android
-        run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=release.keystore -Pandroid.injected.signing.store.password=password -Pandroid.injected.signing.key.alias=my-alias -Pandroid.injected.signing.key.password=password
+        run: ./gradlew assembleRelease -Pandroid.injected.signing.store.file=$(pwd)/app/release.keystore -Pandroid.injected.signing.store.password=password -Pandroid.injected.signing.key.alias=my-alias -Pandroid.injected.signing.key.password=password
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
