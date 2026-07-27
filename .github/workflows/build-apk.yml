@@ -28,7 +28,7 @@ jobs:
         run: npx expo prebuild --platform android
 
       - name: Generate Keystore
-        working-directory: android
+        working-directory: android/app
         run: keytool -genkey -v -keystore release.keystore -alias my-alias -keypass password -storepass password -keyalg RSA -keysize 2048 -validity 10000 -dname "CN=StudyTracker, O=StudyTracker, C=IN"
 
       - name: Build Release APK
@@ -40,4 +40,3 @@ jobs:
         with:
           name: StudyTracker-Release-APK
           path: android/app/build/outputs/apk/release/app-release.apk
-          
