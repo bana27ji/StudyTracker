@@ -1,0 +1,39 @@
+name: Build Android APK
+
+on:
+  workflow_dispatch: # यह हमें बटन दबाकर बिल्ड शुरू करने की सुविधा देगा
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Setup Java (Android needs Java 17)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Expo Prebuild (Bypass EAS Queue)
+        run: npx expo prebuild --platform android
+
+      - name: Build APK
+        working-directory: android
+        run: ./gradlew assembleRelease
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: StudyTracker-APK
+          path: android/app/build/outputs/apk/release/app-release.apk
+          
