@@ -1,3 +1,21 @@
+import { LogBox } from 'react-native';
+
+// ==========================================
+// GLOBAL ERROR CATCHER (Temporary Debug Tool)
+// ==========================================
+if (!global.__originalErrorHandler) {
+  global.__originalErrorHandler = ErrorUtils.getGlobalHandler();
+  ErrorUtils.setGlobalHandler((error, isFatal) => {
+    console.log('CRASH ERROR:', error);
+    alert(
+      (isFatal ? 'FATAL: ' : '') + 
+      'Error: ' + error.name + '\n\n' + 
+      'Message: ' + error.message + '\n\n' + 
+      'Stack: ' + error.stack
+    );
+  });
+}
+
 import React, { useState, useEffect, createContext, useContext, useMemo } from 'react';
 import { 
   StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Alert, 
