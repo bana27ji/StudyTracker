@@ -16,6 +16,14 @@ if (!global.__originalErrorHandler) {
   });
 }
 
+import * as Sentry from '@sentry/react-native';
+
+Sentry.init({
+  dsn: 'https://c7ecfe29da72f897450b7507a288a49e@o4511811384639488.ingest.us.sentry.io/4511811387523072',
+  debug: true,
+  tracesSampleRate: 1.0,
+});
+
 import React, { useState, useEffect, createContext, useContext, useMemo } from 'react';
 import { 
   StyleSheet, Text, View, TextInput, TouchableOpacity, FlatList, Alert, 
